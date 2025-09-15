@@ -109,7 +109,7 @@ def test_post_imovel(mock_connect_db, client):
         "cep":"01000-000",
         "tipo": "apartamento",
         "valor": "1000000",
-        "data_aquisicao":"03/10/2024"
+        "data_aquisicao":"2024/10/03"
     }
     
     mock_connect_db.return_value = mock_conn
@@ -133,7 +133,7 @@ def test_atualizar_imovel(mock_connect_db, client):
         "cep":"01000-000",
         "tipo": "apartamento",
         "valor": "1000000",
-        "data_aquisicao":"03/10/2024"
+        "data_aquisicao":"2024/10/03"
     }
     
     response = client.put("/imoveis/1", json=imovel_editado)
@@ -161,8 +161,8 @@ def test_listar_imovel_tipo(mock_connect_db, client):
     mock_conn.cursor.return_value = mock_cursor
     
     mock_cursor.fetchall.return_value = [
-        (1, "Consolação", "Rua", "Jardins", "São Paulo", "01000-000", "apartamento", "1000000", "03/10/2024"), 
-        (2, "Constante Sodré", "Rua", "Praia do Canto", "Espirito Santo", "10000-000", "apartamento", "1000000", "03/10/2012")
+        (1, "Consolação", "Rua", "Jardins", "São Paulo", "01000-000", "apartamento", "1000000", "2024/10/03"), 
+        (2, "Constante Sodré", "Rua", "Praia do Canto", "Espirito Santo", "10000-000", "apartamento", "1000000", "2012/10/03")
                                          ]
     
     response = client.get("/imoveis/tipo/apartamento")
@@ -177,7 +177,7 @@ def test_listar_imovel_tipo(mock_connect_db, client):
         "cep":"01000-000",
         "tipo": "apartamento",
         "valor": "1000000",
-        "data_aquisicao":"03/10/2024"},
+        "data_aquisicao":"2024/10/03"},
         { "id": 2,
         "logradouro": "Constante Sodré",
         "tipo_logradouro": "Rua",
@@ -186,7 +186,7 @@ def test_listar_imovel_tipo(mock_connect_db, client):
         "cep":"10000-000",
         "tipo": "apartamento",
         "valor": "1000000",
-        "data_aquisicao":"03/10/2012"}
+        "data_aquisicao":"2012/10/03"}
         ]
         }
 
@@ -198,7 +198,7 @@ def test_lista_imovel_cidade(mock_connect_db, client):
     mock_conn.cursor.return_value = mock_cursor
     
     mock_cursor.fetchall.return_value = [
-        (1, "Consolação", "Rua", "Jardins", "São Paulo", "01000-000", "apartamento", "1000000", "03/10/2024")
+        (1, "Consolação", "Rua", "Jardins", "São Paulo", "01000-000", "apartamento", "1000000", "2024/10/03")
     ]
     
     response = client.get("/imoveis/cidade/São Paulo")
@@ -214,6 +214,6 @@ def test_lista_imovel_cidade(mock_connect_db, client):
         "cep":"01000-000",
         "tipo": "apartamento",
         "valor": "1000000",
-        "data_aquisicao":"03/10/2024"}
+        "data_aquisicao":"2024/10/03"}
         ]
         }
