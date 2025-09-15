@@ -8,4 +8,3 @@ def connect_db():
     #Fake DB connection (sera mockada nos testes)
     pass
 
-
