@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import patch, MagicMock
-from wsgi import app, connect_db   
+from app.routes.servidor import app, connect_db
 
 @pytest.fixture
 def client():
@@ -10,13 +10,13 @@ def client():
 
 
 def test_conexao_mockada():
-    with patch("api.connect_db") as mock_conn:
+    with patch("app.routes.servidor.connect_db") as mock_conn:
         mock_conn.return_value = "fake_conn"
-        resp = connect_db()
+        resp = mock_conn()
         assert resp == "fake_conn"
 
 
-@patch("wsgi.connect_db")
+@patch("app.routes.servidor.connect_db")
 def test_get_imoveis(mock_connect_db, client):
 
     mock_conn = MagicMock()
@@ -56,7 +56,7 @@ def test_get_imoveis(mock_connect_db, client):
              "data_aquisicao": "data_aquisicao2",
             }]}
 
-@patch("wsgi.connect_db")
+@patch("app.routes.servidor.connect_db")
 def test_get_imovel_id(mock_connect_db, client):
     
     mock_conn = MagicMock()
@@ -82,7 +82,7 @@ def test_get_imovel_id(mock_connect_db, client):
     "data_aquisicao": "data_aquisicao1"
 }
     
-@patch("wsgi.connect_db")
+@patch("app.routes.servidor.connect_db")
 def test_imovel_nao_encontrado(mock_connect_db, client):
     mock_conn = MagicMock()
     mock_cursor = MagicMock()
@@ -93,9 +93,9 @@ def test_imovel_nao_encontrado(mock_connect_db, client):
     response = client.get("/imoveis/1")
     
     assert response.status_code == 404
-    assert response.get_json() == {"mensagem": "Imóvel não encontrado"}
+    assert response.get_json() == {"erro": "Imóvel não encontrado"}
      
-@patch("wsgi.connect_db")
+@patch("app.routes.servidor.connect_db")
 def test_post_imovel(mock_connect_db, client):
     mock_conn = MagicMock()
     mock_cursor = MagicMock()
@@ -118,7 +118,7 @@ def test_post_imovel(mock_connect_db, client):
     assert response.status_code == 201
     assert response.get_json() == {"mensagem": "Imóvel adicionado com sucesso"}
     
-@patch("wsgi.connect_db")
+@patch("app.routes.servidor.connect_db")
 def test_atualizar_imovel(mock_connect_db, client):
     mock_conn = MagicMock()
     mock_cursor = MagicMock()
@@ -141,7 +141,7 @@ def test_atualizar_imovel(mock_connect_db, client):
     assert response.status_code == 200
     assert response.get_json() == {"mensagem": "Imóvel atualizado com sucesso"}  
     
-@patch("wsgi.connect_db")
+@patch("app.routes.servidor.connect_db")
 def test_remover_imovel(mock_connect_db, client):
     mock_conn = MagicMock()
     mock_cursor = MagicMock()
@@ -153,7 +153,7 @@ def test_remover_imovel(mock_connect_db, client):
     assert response.status_code == 200
     assert response.get_json() == {"mensagem": "Imóvel deletado com sucesso"}   
     
-@patch("wsgi.connect_db")
+@patch("app.routes.servidor.connect_db")
 def test_listar_imovel_tipo(mock_connect_db, client):
     mock_conn = MagicMock()
     mock_cursor = MagicMock()
@@ -190,7 +190,7 @@ def test_listar_imovel_tipo(mock_connect_db, client):
         ]
         }
 
-@patch("wsgi.connect_db")
+@patch("app.routes.servidor.connect_db")
 def test_lista_imovel_cidade(mock_connect_db, client):
     mock_conn = MagicMock()
     mock_cursor = MagicMock()
