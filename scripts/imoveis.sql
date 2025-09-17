@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS imoveis (
-    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    id INT PRIMARY KEY AUTO_INCREMENT,
     logradouro TEXT NOT NULL,
     tipo_logradouro TEXT,
     bairro TEXT,
