@@ -99,6 +99,7 @@ def test_post_imovel(mock_connect_db, client):
     mock_conn = MagicMock()
     mock_cursor = MagicMock()
     mock_conn.cursor.return_value = mock_cursor
+    mock_cursor.lastrowid = 3
     
     novo_imovel = {
         "logradouro": "Consolação",
@@ -110,12 +111,12 @@ def test_post_imovel(mock_connect_db, client):
         "valor": "1000000",
         "data_aquisicao":"2024/10/03"
     }
-    
+    imovel_id = cursor.lastrowid
     mock_connect_db.return_value = mock_conn
     response = client.post("/imoveis", json=novo_imovel)
     
     assert response.status_code == 201
-    assert response.get_json() == {"mensagem": "Imóvel adicionado com sucesso"}
+    assert response.get_json() == {"mensagem": "Imóvel adicionado com sucesso", 'id': 3}
     
 @patch("app.routes.servidor.connect_db")
 def test_atualizar_imovel(mock_connect_db, client):

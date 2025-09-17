@@ -113,10 +113,9 @@ def post_imovel():
         valor,
         data_aquisicao
         ))
-        imovel_id = cursor.fetchone()[0]
         conn.commit()
         
-        resp = {'mensagem': 'Imóvel adicionado com sucesso'}
+        resp = {'mensagem': 'Imóvel adicionado com sucesso', 'id': cursor.lastrowid}
         return resp, 201
 
     except Exception as e:
