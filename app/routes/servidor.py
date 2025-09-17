@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, url_for
 from app.db import connect_db
 
 app = Flask(__name__)
@@ -35,8 +35,12 @@ def get_imoveis():
                 "cep": imovel[5],
                 "tipo": imovel[6],
                 "valor": imovel[7],
-                "data_aquisicao": imovel[8]
-            }
+                "data_aquisicao": imovel[8],
+                "_links": {
+                    "self": {"href": url_for("get_imovel_id", imovel_id=imovel[0], _external=True), "method": 'GET'},
+                    "update": {"href": url_for("editar_imovel", imovel_id=imovel[0], _external=True), "method": 'PUT'},
+                    "delete": {"href": url_for("delete_imovel", imovel_id=imovel[0], _external=True), "method": 'DELETE'}}}
+            
             imoveis.append(imovel_dict)
         resp = {"imoveis": imoveis}
         return resp, 200
@@ -66,9 +70,13 @@ def get_imovel_id(imovel_id):
                 "cep": imovel[5],
                 "tipo": imovel[6],
                 "valor": imovel[7],
-                "data_aquisicao": imovel[8]
-    }
-    
+                "data_aquisicao": imovel[8],
+                "_links": {
+                        "self": {"href": url_for("get_imovel_id", imovel_id=imovel[0], _external=True), "method": 'GET'},
+                        "update": {"href": url_for("editar_imovel", imovel_id=imovel[0], _external=True), "method": 'PUT'},
+                        "delete": {"href": url_for("delete_imovel", imovel_id=imovel[0], _external=True), "method": 'DELETE'},
+                        "all": {"href": url_for("get_imoveis", _external=True), "method": 'GET'}}}
+                
     resp = jsonify(imovel_dict)
     return resp, 200
 
@@ -105,8 +113,11 @@ def post_imovel():
         valor,
         data_aquisicao
         ))
+        imovel_id = cursor.fetchone()[0]
         conn.commit()
-        return {'mensagem': 'Imóvel adicionado com sucesso'}, 201
+        
+        resp = {'mensagem': 'Imóvel adicionado com sucesso'}
+        return resp, 201
 
     except Exception as e:
         return {"erro": str(e)}, 500
@@ -162,10 +173,14 @@ def editar_imovel(imovel_id):
             "cep": cep,
             "tipo": tipo,
             "valor": valor,
-            "data_aquisicao": data_aquisicao
-        }
+            "data_aquisicao": data_aquisicao,
+            "_links": {
+                "self": {"href": url_for("get_imovel_id", imovel_id=imovel_id, _external=True), "method": 'GET'},
+                "update": {"href": url_for("editar_imovel", imovel_id=imovel_id, _external=True), "method": 'PUT'},
+                "delete": {"href": url_for("delete_imovel", imovel_id=imovel_id, _external=True), "method": 'DELETE'},
+                "all": {"href": url_for("get_imoveis", _external=True), "method": 'GET'}}}
         
-        return jsonify({"mensagem": "Imóvel atualizado com sucesso"}), 200
+        return jsonify({"mensagem": "Imóvel atualizado com sucesso", "imovel": imovel_editado}), 200
     except Exception as e:
         return {'erro': str(e)}, 500
     
@@ -187,7 +202,9 @@ def delete_imovel(imovel_id):
     except Exception as e:
         return {'erro': str(e)}, 500
     
-    return {"mensagem": "Imóvel deletado com sucesso"}, 200
+    resp = {"mensagem": "Imóvel deletado com sucesso"}
+    
+    return resp, 200
 
 @app.route('/imoveis/tipo/<string:tipo>', methods = ['GET'])
 def get_imovel_tipo(tipo):
@@ -216,8 +233,12 @@ def get_imovel_tipo(tipo):
         "cep": imovel[5],
         "tipo": imovel[6],
         "valor": imovel[7],
-        "data_aquisicao": imovel[8]
-        }
+        "data_aquisicao": imovel[8],
+        "_links": {
+                "self": {"href": url_for("get_imovel_id", imovel_id=imovel[0], _external=True), "method": 'GET'},
+                "update": {"href": url_for("editar_imovel", imovel_id=imovel[0], _external=True), "method": 'PUT'},
+                "delete": {"href": url_for("delete_imovel", imovel_id=imovel[0], _external=True), "method": 'DELETE'}}}
+        
         imoveis.append(imovel_dict)
     return {"imoveis": imoveis}, 200
 
@@ -232,13 +253,13 @@ def get_imovel_cidade(cidade):
     sql = "SELECT * FROM imoveis WHERE cidade = %s"
     cursor.execute(sql, (cidade, ))
     
-    imoveis_tipo = cursor.fetchall()
-    if not imoveis_tipo:
+    imoveis_cidade = cursor.fetchall()
+    if not imoveis_cidade:
         return {'erro': 'Imóvel não encontrado'}, 404
     
     
     imoveis = []
-    for imovel in imoveis_tipo:
+    for imovel in imoveis_cidade:
         imovel_dict = {
         "id": imovel[0],
         "logradouro": imovel[1],
@@ -248,7 +269,12 @@ def get_imovel_cidade(cidade):
         "cep": imovel[5],
         "tipo": imovel[6],
         "valor": imovel[7],
-        "data_aquisicao": imovel[8]}
+        "data_aquisicao": imovel[8],
+        "_links": {
+                "self": {"href": url_for("get_imovel_id", imovel_id=imovel[0], _external=True), "method": 'GET'},
+                "update": {"href": url_for("editar_imovel", imovel_id=imovel[0], _external=True), "method": 'PUT'},
+                "delete": {"href": url_for("delete_imovel", imovel_id=imovel[0], _external=True), "method": 'DELETE'}}}
+        
         imoveis.append(imovel_dict)
     return {"imoveis": imoveis}, 200
 
